@@ -36,18 +36,12 @@ Exportar CSV desde Netlify es manual y **no** equivale a una captura automática
 Estado: `PENDIENTE DE PROBAR` · Captura de la fila recibida: `PENDIENTE`.
 
 ## 4. Google Analytics 4
-1. Crear propiedad GA4 y un flujo web; copiar el ID `G-XXXXXXXXXX` real.
-2. En `script.js`, reemplazar la primera línea `var GA_ID = 'G-XXXXXXXXXX';` por el ID real (un solo lugar; sirve para `index.html` y `gracias.html`). Mientras sea el marcador, **no se carga Analytics ni se envía ningún evento**.
-3. Verificar: *Informes → Tiempo real* o *Administrar → DebugView* (con la extensión «Google Analytics Debugger») y recorrer el sitio.
-4. Eventos implementados:
-   - `page_view`: automático al cargar cada página.
-   - `cta_click`: solo en los botones «Solicitar evaluación de retiro» (menú, hero, sección final). Parámetro `cta_location`. Los enlaces de navegación del menú no cuentan.
-   - `generate_lead`: **solo** en `gracias.html`, después de un envío confirmado por Netlify (respuesta HTTP correcta).
-5. En GA4 → *Administrar → Eventos*, marcar `generate_lead` como **evento clave** una vez que aparezca.
-6. Anti-duplicación: al enviarse con éxito, `script.js` guarda un token de un solo uso en `sessionStorage`. `gracias.html` lo consume y dispara `generate_lead` una vez; recargar la página o entrar directamente no lo repite (y registra el token en `localStorage`). Limitación: es una protección del lado del navegador; la **fuente de verdad de los leads es Netlify Forms / la hoja**, no GA4.
-7. Métricas para la bitácora (usar solo datos reales):
-   - **CTR** = clics `cta_click` ÷ visitas × 100
-   - **Tasa de registro** = formularios válidos (Netlify) ÷ visitas × 100
+La etiqueta `G-PRWCV5HMJY` está en el `<head>` de `index.html` y `gracias.html`; `script.js` solo envía eventos. Falta **verificar** en GA4 (Informes → Tiempo real, o DebugView) que lleguen los datos.
+- `page_view`: automático en ambas páginas.
+- `cta_click`: botones «Solicitar evaluación de retiro» (menú, hero). Parámetro `cta_location`. Los enlaces de navegación no cuentan.
+- `form_submit_success` y `generate_lead`: solo en `gracias.html`, tras un envío confirmado por Netlify, con token de un solo uso (recargar no repite el evento). La fuente de verdad de los leads es Netlify Forms / Sheet.
+- En GA4 → Administrar → Eventos, marca `form_submit_success` (o `generate_lead`) como evento clave cuando aparezca.
+- CTR = clics `cta_click` ÷ visitas × 100 · Tasa de registro = formularios válidos ÷ visitas × 100.
 
 ## 5. UTMs por canal
 Base: `https://TU-SITIO.netlify.app/`

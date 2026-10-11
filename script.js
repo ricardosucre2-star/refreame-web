@@ -1,9 +1,8 @@
 /* RE-FRAME · script.js (index.html y gracias.html)
-   ID de GA4: reemplazar por el real (formato G-XXXXXXXXXX). Vacío o placeholder = no se carga Analytics. */
-var GA_ID = 'G-XXXXXXXXXX';
+   La etiqueta GA4 (G-PRWCV5HMJY) está en el <head> de ambas páginas; aquí solo se envían los eventos. */
 (function () {
   'use strict';
-  var GA_ACTIVE = /^G-[A-Z0-9]{6,}$/.test(GA_ID) && GA_ID !== 'G-XXXXXXXXXX';
+  var GA_READY = function () { return typeof window.gtag === 'function'; };
   var UTM_KEYS = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content'];
   var TOKEN_KEY = 'rf_lead_token', SENT_KEY = 'rf_lead_sent', UTM_KEY = 'rf_utm';
   var store = {
@@ -12,16 +11,8 @@ var GA_ID = 'G-XXXXXXXXXX';
     del: function (s, k) { try { s.removeItem(k); } catch (e) {} }
   };
 
-  /* ---------- GA4 ---------- */
-  window.dataLayer = window.dataLayer || [];
-  window.gtag = function () { window.dataLayer.push(arguments); };
-  if (GA_ACTIVE) {
-    var s = document.createElement('script');
-    s.async = true; s.src = 'https://www.googletagmanager.com/gtag/js?id=' + encodeURIComponent(GA_ID);
-    document.head.appendChild(s);
-    gtag('js', new Date()); gtag('config', GA_ID); /* envía page_view automático */
-  }
-  function track(name, params) { if (GA_ACTIVE) gtag('event', name, params || {}); }
+  /* ---------- GA4 (eventos) ---------- */
+  function track(name, params) { if (GA_READY()) window.gtag('event', name, params || {}); }
 
   /* ---------- UTMs ---------- */
   function readUtm() {
@@ -112,6 +103,8 @@ var GA_ID = 'G-XXXXXXXXXX';
     var sent = store.get(localStorage, SENT_KEY);
     if (sent && sent.split(',').indexOf(token) !== -1) return;
     store.set(localStorage, SENT_KEY, (sent ? sent + ',' : '') + token);
-    track('generate_lead', { form_name: 'solicitudes-reframe', utm_source: utm.utm_source || 'directo', utm_medium: utm.utm_medium || 'directo', utm_campaign: utm.utm_campaign || 'directo' });
+    var lead = { form_name: 'solicitudes-reframe', utm_source: utm.utm_source || 'directo', utm_medium: utm.utm_medium || 'directo', utm_campaign: utm.utm_campaign || 'directo' };
+    track('form_submit_success', lead); /* evento principal */
+    track('generate_lead', lead); /* evento clave estándar de GA4 */
   }
 })();

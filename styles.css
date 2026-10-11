@@ -170,3 +170,7 @@ html{scroll-padding-top:80px}
 
 .hero-bg{-webkit-mask-image:linear-gradient(180deg,#000 0,#000 calc(80px + 34vw),transparent calc(80px + 43vw));mask-image:linear-gradient(180deg,#000 0,#000 calc(80px + 34vw),transparent calc(80px + 43vw))}
 @media (max-width:980px){.hero-bg{-webkit-mask-image:none;mask-image:none}}
+
+/* Legibilidad de los mensajes en la página de confirmación */
+.thanks .lead { color: #e4ebe3; }
+.thanks .muted { color: #cbd6cb; }
